@@ -72,6 +72,34 @@ export function useInvitation(token: string) {
         setLoading(true);
         setError(null);
 
+        // Handling 'demo-token' for demonstration purposes
+        if (token === 'demo-token') {
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          setData({
+            template_id: 1,
+            title: "Mariage d'Elegance & Prestige",
+            event_date: "2026-12-24T18:30:00Z",
+            event_type: "wedding",
+            dress_code: "Black Tie / Tenue de Soirée",
+            host: "La Famille Royale",
+            location: {
+              name: "Palais Bourbon",
+              address: "126 Rue de l'Université, 75007 Paris",
+              city: "Paris",
+              country: "FR",
+              lat: 48.8618,
+              lng: 2.3186
+            },
+            custom_data: {
+              hashtag: "#RoyalWedding2026",
+              groom_photo: "https://images.unsplash.com/photo-1550005816-19aa849a502c?auto=format&fit=crop&q=80&w=400",
+              bride_photo: "https://images.unsplash.com/photo-1594462753934-895842be4a1b?auto=format&fit=crop&q=80&w=400",
+            }
+          });
+          setLoading(false);
+          return;
+        }
+
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ceremony-api.onrender.com';
         const apiUrl = `${baseUrl}/api/public/events/${token}`;
 
