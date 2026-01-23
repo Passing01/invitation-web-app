@@ -72,50 +72,24 @@ export function useInvitation(token: string) {
         setLoading(true);
         setError(null);
 
-        // REAL API CALL (Replace with your actual domain)
-        // const apiUrl = `https://votre-domaine.com/api/events/${token}`;
-        // const response = await fetch(apiUrl, {
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     // 'Authorization': `Bearer ${tokenSanctum}` // If public access is not allowed
-        //   }
-        // });
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ceremony-api.onrender.com';
+        const apiUrl = `${baseUrl}/api/public/events/${token}`;
 
-        // if (!response.ok) throw new Error("Invitation introuvable.");
-        // const json = await response.json();
+        const response = await fetch(apiUrl, {
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
 
-        // --- MOCK DATA FOR DEVELOPMENT (Using your specific JSON structure) ---
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        if (!response.ok) {
+          throw new Error("Invitation introuvable sur le serveur.");
+        }
 
-        const mockApiResponse: LaravelInvitationResponse = {
-          template_id: 1, // Royal
-          title: "Le Mariage d'Alice & Bob",
-          event_date: "2026-09-12T15:00:00Z",
-          event_type: "wedding",
-          dress_code: "Tenue de Cocktail",
-          location: {
-            name: "Château de Lumière",
-            address: "12 Rue des Fleurs, 75000 Paris",
-            city: "Paris",
-            country: "FR",
-            lat: 48.8566,
-            lng: 2.3522
-          },
-          custom_data: {
-            hashtag: "#AliceBob2026",
-            groom_photo: "https://images.unsplash.com/photo-1550005816-19aa849a502c?auto=format&fit=crop&q=80&w=400",
-            bride_photo: "https://images.unsplash.com/photo-1594462753934-895842be4a1b?auto=format&fit=crop&q=80&w=400",
-          },
-          custom_fields: {
-            rsvp_deadline: "2026-08-20",
-          },
-          // Extra field for the UI to display who is hosting
-          host: "Alice & Bob"
-        };
-
-        setData(mockApiResponse);
+        const json = await response.json();
+        setData(json.data || json);
       } catch (err: any) {
-        setError(err.message || "Impossible de charger l'invitation.");
+        console.error("Fetch error:", err);
+        setError("Impossible de charger l'invitation. Veuillez vérifier votre connexion.");
       } finally {
         setLoading(false);
       }
@@ -126,3 +100,4 @@ export function useInvitation(token: string) {
 
   return { data, loading, error };
 }
+

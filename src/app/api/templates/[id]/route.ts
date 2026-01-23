@@ -3,9 +3,9 @@ import { TEMPLATE_STYLES } from '@/lib/templates';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    const { id } = params;
+    const { id } = await params;
     const template = TEMPLATE_STYLES[id];
 
     if (!template) {
