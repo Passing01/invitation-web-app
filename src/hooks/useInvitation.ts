@@ -37,13 +37,13 @@ export interface LaravelInvitationResponse {
       main: string;
       dessert: string;
     };
-    [key: string]: any;
+    [key: string]: string | number | boolean | object | undefined;
   };
   custom_fields?: {
     rsvp_deadline?: string;
     children_allowed?: boolean;
     shuttle_times?: string[];
-    [key: string]: any;
+    [key: string]: string | number | boolean | object | undefined;
   };
   // Internal mapping for the UI
   host?: string; // Derived or extra field
@@ -115,9 +115,10 @@ export function useInvitation(token: string) {
 
         const json = await response.json();
         setData(json.data || json);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Fetch error:", err);
-        setError("Impossible de charger l'invitation. Veuillez vérifier votre connexion.");
+        const message = err instanceof Error ? err.message : "Impossible de charger l'invitation.";
+        setError(message);
       } finally {
         setLoading(false);
       }

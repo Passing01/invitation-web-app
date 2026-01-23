@@ -125,7 +125,7 @@ export function InvitationContent({ data }: InvitationContentProps) {
                         />
                     </div>
                     <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-400">
-                        Pass d'entrée individuel
+                        Pass d&apos;entrée individuel
                     </p>
                 </motion.div>
             </section>

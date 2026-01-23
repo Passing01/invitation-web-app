@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface ModalProps {
     isOpen: boolean;
@@ -15,8 +14,13 @@ interface ModalProps {
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
     const [mounted, setMounted] = useState(false);
 
+    // Initial mount to avoid hydration mismatch
     useEffect(() => {
         setMounted(true);
+    }, []);
+
+    // Body scroll lock
+    useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
         } else {

@@ -40,7 +40,7 @@ function InvitationContent({ token }: { token: string }) {
             <h2 className="text-3xl mb-4">Oups...</h2>
             <p className="text-neutral-500 italic mb-8">{error || "Invitation introuvable"}</p>
             <a href="/" className="text-[10px] uppercase tracking-widest border border-white/20 px-6 py-3 hover:bg-white hover:text-black transition-all">
-                Retour à l'accueil
+                Retour à l&apos;accueil
             </a>
         </div>
     );
