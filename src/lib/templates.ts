@@ -25,11 +25,12 @@ export interface TemplatePage {
 }
 
 export interface TemplateConfig {
-    id: string;
+    id: string; // Internal key (royal, minimal)
+    numericId: number; // Official ID for Laravel (1, 2, 3)
     name: string;
     description: string;
     previewUrl: string;
-    bgUrl?: string; // Fallback background for all pages
+    bgUrl?: string;
     bgColor: string;
     accentColor: string;
     fonts: string[];
@@ -39,6 +40,7 @@ export interface TemplateConfig {
 export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
     royal: {
         id: 'royal',
+        numericId: 1,
         name: 'Gala Royal',
         description: 'Élégance intemporelle, or et noir profond.',
         previewUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=400',
@@ -95,6 +97,7 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
     },
     minimal: {
         id: 'minimal',
+        numericId: 2,
         name: 'Minimal Modern',
         description: 'Simplicité, clarté et typographie audacieuse.',
         previewUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
@@ -102,47 +105,16 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
         accentColor: '#1a1a1a',
         fonts: ['Inter', 'Montserrat'],
         pages: [
-            {
-                id: 'cover',
-                title: 'Cover',
-                elements: [
-                    { id: 'title', type: 'text', x: 50, y: 50, style: { fontSize: 48, fontFamily: 'Montserrat', color: '#1a1a1a', textAlign: 'center', fontWeight: 900, textTransform: 'uppercase' } },
-                ]
-            },
-            {
-                id: 'details',
-                title: 'Date',
-                elements: [
-                    { id: 'date', type: 'text', x: 50, y: 50, style: { fontSize: 24, fontFamily: 'Inter', color: '#1a1a1a', textAlign: 'center', fontWeight: 300 } },
-                ]
-            },
-            {
-                id: 'location',
-                title: 'Lieu',
-                elements: [
-                    { id: 'location', type: 'text', x: 50, y: 40, style: { fontSize: 18, fontFamily: 'Inter', color: '#1a1a1a', textAlign: 'center', width: 80 } },
-                    { id: 'map', type: 'map', x: 50, y: 70, style: { width: 90 } }
-                ]
-            },
-            {
-                id: 'rsvp',
-                title: 'RSVP',
-                elements: [
-                    { id: 'rsvp-form', type: 'rsvp-form', x: 50, y: 50, style: { width: 85 } }
-                ]
-            },
-            {
-                id: 'end',
-                title: 'Merci',
-                elements: [
-                    { id: 'thanks', type: 'text', x: 50, y: 40, style: { fontSize: 24, fontFamily: 'Montserrat', color: '#1a1a1a', textAlign: 'center', fontWeight: 700 }, content: 'À BIENTÔT.' },
-                    { id: 'qr', type: 'qrcode', x: 50, y: 70, style: { width: 30 } }
-                ]
-            }
+            { id: 'cover', title: 'Cover', elements: [{ id: 'title', type: 'text', x: 50, y: 50, style: { fontSize: 48, fontFamily: 'Montserrat', color: '#1a1a1a', textAlign: 'center', fontWeight: 900, textTransform: 'uppercase' } }] },
+            { id: 'details', title: 'Date', elements: [{ id: 'date', type: 'text', x: 50, y: 50, style: { fontSize: 24, fontFamily: 'Inter', color: '#1a1a1a', textAlign: 'center', fontWeight: 300 } }] },
+            { id: 'location', title: 'Lieu', elements: [{ id: 'location', type: 'text', x: 50, y: 40, style: { fontSize: 18, fontFamily: 'Inter', color: '#1a1a1a', textAlign: 'center', width: 80 } }, { id: 'map', type: 'map', x: 50, y: 70, style: { width: 90 } }] },
+            { id: 'rsvp', title: 'RSVP', elements: [{ id: 'rsvp-form', type: 'rsvp-form', x: 50, y: 50, style: { width: 85 } }] },
+            { id: 'end', title: 'Merci', elements: [{ id: 'thanks', type: 'text', x: 50, y: 40, style: { fontSize: 24, fontFamily: 'Montserrat', color: '#1a1a1a', textAlign: 'center', fontWeight: 700 }, content: 'À BIENTÔT.' }, { id: 'qr', type: 'qrcode', x: 50, y: 70, style: { width: 30 } }] }
         ]
     },
     floral: {
         id: 'floral',
+        numericId: 3,
         name: 'Jardin Floral',
         description: 'Aquarelle, douceur et romantisme pour vos moments.',
         previewUrl: 'https://images.unsplash.com/photo-1522673607200-164883eeca48?auto=format&fit=crop&q=80&w=400',
@@ -159,6 +131,7 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
     },
     vintage: {
         id: 'vintage',
+        numericId: 4,
         name: 'Parchemin Antique',
         description: 'Style rétro, papier vieilli et charme d’autrefois.',
         previewUrl: 'https://images.unsplash.com/photo-1586075010633-244519675560?auto=format&fit=crop&q=80&w=400',
@@ -175,6 +148,7 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
     },
     corporate: {
         id: 'corporate',
+        numericId: 5,
         name: 'Business Elite',
         description: 'Précision géométrique et professionnalisme moderne.',
         previewUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=400',
