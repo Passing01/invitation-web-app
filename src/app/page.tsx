@@ -10,7 +10,7 @@ export default function TemplatesPage() {
       <section className="pt-24 pb-16 px-6 text-center max-w-4xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8">
           <Star size={14} className="text-[#D4AF37] fill-[#D4AF37]" />
-          <span className="text-[10px] uppercase tracking-widest text-neutral-300">Catalogue d&apos;Excellence</span>
+          <span className="text-[10px] uppercase tracking-widest text-neutral-300">Catalogue d'Excellence</span>
         </div>
         <h1 className="text-5xl md:text-7xl font-serif mb-6 tracking-tight">
           Choisissez votre <br /> <span className="text-[#D4AF37]">Univers Prestige</span>
@@ -49,7 +49,7 @@ export default function TemplatesPage() {
               <div className="p-8">
                 <h3 className="text-2xl font-serif mb-2 tracking-wide">{template.name}</h3>
                 <p className="text-neutral-500 text-sm mb-8 font-light line-clamp-2 italic leading-relaxed">
-                  &quot;{template.description}&quot;
+                  "{template.description}"
                 </p>
 
                 <Link href={`/i/demo-token?style=${template.id}`}>

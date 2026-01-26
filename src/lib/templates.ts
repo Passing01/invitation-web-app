@@ -53,9 +53,11 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
                 id: 'cover',
                 title: 'Accueil',
                 elements: [
-                    { id: 'host', type: 'text', x: 50, y: 30, style: { fontSize: 16, fontFamily: 'Cormorant Garamond', color: '#D4AF37', textAlign: 'center', letterSpacing: '0.4em', textTransform: 'uppercase' } },
-                    { id: 'title', type: 'text', x: 50, y: 50, style: { fontSize: 64, fontFamily: 'Playfair Display', color: '#ffffff', textAlign: 'center', fontWeight: 'bold' } },
-                    { id: 'subtitle', type: 'text', x: 50, y: 70, style: { fontSize: 20, fontFamily: 'Cormorant Garamond', color: '#D4AF37', textAlign: 'center', italic: true }, content: 'Une soirée d’exception' }
+                    { id: 'host', type: 'text', x: 50, y: 15, style: { fontSize: 16, fontFamily: 'Cormorant Garamond', color: '#D4AF37', textAlign: 'center', letterSpacing: '0.4em', textTransform: 'uppercase' } },
+                    { id: 'photo', type: 'image', x: 50, y: 40, style: { width: 60 } },
+                    { id: 'title', type: 'text', x: 50, y: 65, style: { fontSize: 48, fontFamily: 'Playfair Display', color: '#ffffff', textAlign: 'center', fontWeight: 'bold' } },
+                    { id: 'names', type: 'text', x: 50, y: 78, style: { fontSize: 24, fontFamily: 'Cormorant Garamond', color: '#D4AF37', textAlign: 'center', italic: true } },
+                    { id: 'subtitle', type: 'text', x: 50, y: 88, style: { fontSize: 16, fontFamily: 'Cormorant Garamond', color: '#D4AF37', textAlign: 'center', italic: true }, content: 'Une soirée d’exception' }
                 ]
             },
             {

@@ -3,11 +3,12 @@ import { cn } from '@/lib/utils';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
+    error?: string;
 }
 
-export function Input({ className, label, id, ...props }: InputProps) {
+export function Input({ className, label, id, error, ...props }: InputProps) {
     return (
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 flex-1">
             {label && (
                 <label
                     htmlFor={id}
@@ -19,11 +20,17 @@ export function Input({ className, label, id, ...props }: InputProps) {
             <input
                 id={id}
                 className={cn(
-                    "flex h-12 w-full border-b border-neutral-300 bg-transparent px-0 py-2 text-sm transition-all duration-300 placeholder:text-neutral-400 focus:outline-none focus:border-white/50 disabled:cursor-not-allowed disabled:opacity-50 font-serif text-inherit",
+                    "flex h-12 w-full border-b bg-transparent px-0 py-2 text-sm transition-all duration-300 placeholder:text-neutral-400 focus:outline-none font-serif text-inherit",
+                    error ? "border-red-500" : "border-neutral-300 focus:border-white/50",
                     className
                 )}
                 {...props}
             />
+            {error && (
+                <p className="text-red-500 text-[10px] uppercase tracking-tighter italic">
+                    {error}
+                </p>
+            )}
         </div>
     );
 }

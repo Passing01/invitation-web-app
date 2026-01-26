@@ -1,15 +1,15 @@
+"use client";
+
 import { useState, useEffect } from 'react';
 
-/**
- * Interface matching the Laravel API response provided by the USER
- */
 export interface LaravelInvitationResponse {
+  id?: number | string;
+  slug?: string;
   template_id: number;
   title: string;
   event_date: string;
-  event_type?: string;
+  event_type: 'wedding' | 'birthday' | 'corporate' | string;
   dress_code?: string;
-  // Handle both single location and multiple locations from the JSON variants
   location?: {
     name: string;
     address: string;
@@ -28,29 +28,34 @@ export interface LaravelInvitationResponse {
     lat?: number;
     lng?: number;
   }>;
+  // Specific fields based on event_type
+  groom_name?: string;
+  bride_name?: string;
+  groom_photo_url?: string;
+  bride_photo_url?: string;
+
+  celebrant_name?: string;
+  celebrant_photo_url?: string;
+  age?: number | string;
+
+  company_name?: string;
+  company_logo_url?: string;
+  agenda?: string | string[];
+
   custom_data?: {
     hashtag?: string;
-    groom_photo?: string; // URL of the uploaded photo
-    bride_photo?: string; // URL of the uploaded photo
-    menu?: {
-      starter: string;
-      main: string;
-      dessert: string;
-    };
-    [key: string]: string | number | boolean | object | undefined;
+    [key: string]: any;
   };
   custom_fields?: {
     rsvp_deadline?: string;
     children_allowed?: boolean;
     shuttle_times?: string[];
-    [key: string]: string | number | boolean | object | undefined;
+    [key: string]: any;
   };
-  // Internal mapping for the UI
-  host?: string; // Derived or extra field
+  host?: string;
   musicUrl?: string;
 }
 
-// Mapping of template_id from API to our internal style strings
 export const TEMPLATE_ID_MAP: Record<number, string> = {
   1: 'royal',
   2: 'minimal',
@@ -72,10 +77,11 @@ export function useInvitation(token: string) {
         setLoading(true);
         setError(null);
 
-        // Handling 'demo-token' for demonstration purposes
-        if (token === 'demo-token') {
+        // Demo token handling
+        if (token === 'demo-token' || token === 'demo' || token === 'wedding' || token === 'birthday' || token === 'corporate') {
           await new Promise((resolve) => setTimeout(resolve, 800));
-          setData({
+
+          let mockData: LaravelInvitationResponse = {
             template_id: 1,
             title: "Mariage d'Elegance & Prestige",
             event_date: "2026-12-24T18:30:00Z",
@@ -85,17 +91,35 @@ export function useInvitation(token: string) {
             location: {
               name: "Palais Bourbon",
               address: "126 Rue de l'Université, 75007 Paris",
-              city: "Paris",
-              country: "FR",
-              lat: 48.8618,
-              lng: 2.3186
+              city: "Paris", country: "FR", lat: 48.8618, lng: 2.3186
             },
-            custom_data: {
-              hashtag: "#RoyalWedding2026",
-              groom_photo: "https://images.unsplash.com/photo-1550005816-19aa849a502c?auto=format&fit=crop&q=80&w=400",
-              bride_photo: "https://images.unsplash.com/photo-1594462753934-895842be4a1b?auto=format&fit=crop&q=80&w=400",
-            }
-          });
+            groom_name: "Jean-Baptiste",
+            bride_name: "Marie-Antoinette",
+            groom_photo_url: "https://images.unsplash.com/photo-1550005816-19aa849a502c?auto=format&fit=crop&q=80&w=400",
+            bride_photo_url: "https://images.unsplash.com/photo-1594462753934-895842be4a1b?auto=format&fit=crop&q=80&w=400",
+          };
+
+          if (token === 'birthday') {
+            mockData = {
+              ...mockData,
+              event_type: 'birthday',
+              title: "30 Ans de Rayonnement",
+              celebrant_name: "Sophie Valérie",
+              age: 30,
+              celebrant_photo_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400",
+            };
+          } else if (token === 'corporate') {
+            mockData = {
+              ...mockData,
+              event_type: 'corporate',
+              title: "Sommet de l'Innovation 2026",
+              company_name: "TechElite Global",
+              company_logo_url: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&q=80&w=400",
+              agenda: ["09:00 - Keynote", "12:00 - Déjeuner Networking", "15:00 - Workshops"],
+            };
+          }
+
+          setData(mockData);
           setLoading(false);
           return;
         }
@@ -104,21 +128,22 @@ export function useInvitation(token: string) {
         const apiUrl = `${baseUrl}/api/public/events/${token}`;
 
         const response = await fetch(apiUrl, {
-          headers: {
-            'Accept': 'application/json',
-          }
+          headers: { 'Accept': 'application/json' }
         });
 
+        if (response.status === 404) {
+          throw new Error("L'invitation demandée est introuvable. Le lien est peut-être expiré ou incorrect.");
+        }
+
         if (!response.ok) {
-          throw new Error("Invitation introuvable sur le serveur.");
+          throw new Error(`Erreur serveur (${response.status}). Veuillez réessayer plus tard.`);
         }
 
         const json = await response.json();
         setData(json.data || json);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error("Fetch error:", err);
-        const message = err instanceof Error ? err.message : "Impossible de charger l'invitation.";
-        setError(message);
+        setError(err.message || "Impossible de charger l'invitation. Vérifiez votre connexion.");
       } finally {
         setLoading(false);
       }
@@ -129,4 +154,3 @@ export function useInvitation(token: string) {
 
   return { data, loading, error };
 }
-

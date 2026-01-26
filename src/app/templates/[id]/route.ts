@@ -7,11 +7,13 @@ export async function GET(
 ) {
     const { id } = await params;
 
-    // Try to find by string ID (slug) or numeric ID
+    // Logic to find template:
+    // 1. Try direct string ID (slug) e.g., 'royal'
+    // 2. Try numeric ID e.g., '1'
     let template = TEMPLATE_STYLES[id];
 
     if (!template) {
-        const found = Object.values(TEMPLATE_STYLES).find(t => t.numericId.toString() === id);
+        const found = Object.values(TEMPLATE_STYLES).find((t) => t.numericId.toString() === id);
         if (found) {
             template = found;
         }

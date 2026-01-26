@@ -36,7 +36,7 @@ export function DynamicTemplateRenderer({
         if (element.type === 'text') {
             let content = element.content || '';
 
-            // Dynamic Mapping
+            // Dynamic Mapping based on event_type
             switch (element.id) {
                 case 'title': content = eventData.title; break;
                 case 'host': content = eventData.host || eventData.title; break;
@@ -47,6 +47,34 @@ export function DynamicTemplateRenderer({
                     break;
                 case 'dress_code': content = eventData.dress_code || ''; break;
                 case 'hashtag': content = eventData.custom_data?.hashtag || ''; break;
+
+                // Wedding specific
+                case 'names':
+                case 'couple_names':
+                    if (eventData.event_type === 'wedding') {
+                        content = `${eventData.groom_name || 'Groom'} & ${eventData.bride_name || 'Bride'}`;
+                    } else if (eventData.event_type === 'birthday') {
+                        content = eventData.celebrant_name || '';
+                    } else if (eventData.event_type === 'corporate') {
+                        content = eventData.company_name || '';
+                    }
+                    break;
+                case 'groom_name': content = eventData.groom_name || ''; break;
+                case 'bride_name': content = eventData.bride_name || ''; break;
+
+                // Birthday specific
+                case 'celebrant_name': content = eventData.celebrant_name || ''; break;
+                case 'age': content = eventData.age ? `${eventData.age} Ans` : ''; break;
+
+                // Corporate specific
+                case 'company_name': content = eventData.company_name || ''; break;
+                case 'agenda':
+                    if (Array.isArray(eventData.agenda)) {
+                        content = eventData.agenda.join('\n');
+                    } else {
+                        content = eventData.agenda || '';
+                    }
+                    break;
             }
 
             return (
@@ -71,12 +99,43 @@ export function DynamicTemplateRenderer({
         }
 
         if (element.type === 'image') {
-            let src = element.content || '';
-            if (element.id === 'groom_photo') src = eventData.custom_data?.groom_photo || src;
-            if (element.id === 'bride_photo') src = eventData.custom_data?.bride_photo || src;
+            const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400';
+            const FALLBACK_LOGO = 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=400';
+
+            let src = element.content || FALLBACK_PHOTO;
+
+            // Mapping dynamic images based on ID and Event Type
+            if (eventData.event_type === 'wedding') {
+                if (element.id === 'photo' || element.id === 'couple_photo') {
+                    // Two photos côte à côte if it's a wedding and we have both
+                    return (
+                        <div key={element.id} style={{ ...commonStyles, width: '90%', left: '50%' }} className="flex justify-center gap-4">
+                            <div className="w-[45%] aspect-[3/4] rounded-full border-2 border-white/20 shadow-xl overflow-hidden bg-neutral-900">
+                                <img src={eventData.groom_photo_url || FALLBACK_PHOTO} alt="Groom" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="w-[45%] aspect-[3/4] rounded-full border-2 border-white/20 shadow-xl overflow-hidden bg-neutral-900">
+                                <img src={eventData.bride_photo_url || FALLBACK_PHOTO} alt="Bride" className="w-full h-full object-cover" />
+                            </div>
+                        </div>
+                    );
+                }
+                if (element.id === 'groom_photo') src = eventData.groom_photo_url || FALLBACK_PHOTO;
+                if (element.id === 'bride_photo') src = eventData.bride_photo_url || FALLBACK_PHOTO;
+            } else if (eventData.event_type === 'birthday') {
+                if (element.id === 'photo' || element.id === 'celebrant_photo') {
+                    src = eventData.celebrant_photo_url || FALLBACK_PHOTO;
+                }
+            } else if (eventData.event_type === 'corporate') {
+                if (element.id === 'logo' || element.id === 'company_logo') {
+                    src = eventData.company_logo_url || FALLBACK_LOGO;
+                }
+            }
 
             return (
-                <div key={element.id} style={{ ...commonStyles, aspectRatio: '1/1', overflow: 'hidden' }} className="rounded-full border-2 border-white/20 shadow-xl">
+                <div key={element.id} style={{ ...commonStyles, aspectRatio: eventData.event_type === 'corporate' ? 'auto' : '1/1', overflow: 'hidden' }} className={cn(
+                    "border-2 border-white/20 shadow-xl bg-neutral-900",
+                    eventData.event_type === 'corporate' ? "rounded-lg" : "rounded-full"
+                )}>
                     <img src={src} alt="" className="w-full h-full object-cover" />
                 </div>
             );
@@ -108,6 +167,7 @@ export function DynamicTemplateRenderer({
                     )}>
                         <RSVPForm
                             variant={isLight ? 'light' : 'dark'}
+                            eventData={eventData}
                             onSubmit={(data) => console.log('RSVP:', data)}
                         />
                     </div>

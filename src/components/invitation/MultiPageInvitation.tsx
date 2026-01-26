@@ -6,11 +6,10 @@ import { TemplateConfig } from '@/lib/templates';
 import { DynamicTemplateRenderer } from './DynamicTemplateRenderer';
 import { ChevronUp, ChevronDown, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { LaravelInvitationResponse } from '@/hooks/useInvitation';
 
 interface MultiPageInvitationProps {
     config: TemplateConfig;
-    eventData: LaravelInvitationResponse;
+    eventData: any;
     containerWidth: number;
 }
 

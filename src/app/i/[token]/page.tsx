@@ -14,19 +14,30 @@ function InvitationContent({ token }: { token: string }) {
     const { data, loading, error } = useInvitation(token);
     const [containerWidth, setContainerWidth] = useState(500);
 
-    // Logic to select template: 
-    // 1. Check URL query string (?style=...) 
-    // 2. If not, check data.template_id from Laravel API
-    // 3. Fallback to 'royal'
+    // Dynamic Style Extraction
     const urlStyle = searchParams.get('style');
-    const apiStyle = data ? TEMPLATE_ID_MAP[data.template_id] : null;
-    const styleKey = urlStyle || apiStyle || 'royal';
+    const apiStyleId = data?.template_id;
+
+    // Resolve which template key to use (priority: URL > API > Default)
+    let styleKey: string = 'royal';
+
+    if (urlStyle) {
+        styleKey = urlStyle;
+    } else if (apiStyleId) {
+        styleKey = TEMPLATE_ID_MAP[apiStyleId] || apiStyleId.toString();
+    }
+
+    // Secondary check: if the key is a number, find the slug
+    if (!TEMPLATE_STYLES[styleKey]) {
+        const found = Object.values(TEMPLATE_STYLES).find(t => t.numericId.toString() === styleKey || t.id === styleKey);
+        if (found) styleKey = found.id;
+    }
 
     const currentTemplate: TemplateConfig = TEMPLATE_STYLES[styleKey] || TEMPLATE_STYLES.royal;
 
     useEffect(() => {
         const handleResize = () => {
-            const width = Math.min(window.innerWidth - 32, 500);
+            const width = Math.min(window.innerWidth, 2000); // Take full width but scale elements
             setContainerWidth(width);
         };
         handleResize();
@@ -35,18 +46,19 @@ function InvitationContent({ token }: { token: string }) {
     }, []);
 
     if (loading) return <InvitationSkeleton />;
+
     if (error || !data) return (
-        <div className="min-h-screen flex flex-col items-center justify-center font-serif text-white p-6 text-center">
-            <h2 className="text-3xl mb-4">Oups...</h2>
-            <p className="text-neutral-500 italic mb-8">{error || "Invitation introuvable"}</p>
-            <a href="/" className="text-[10px] uppercase tracking-widest border border-white/20 px-6 py-3 hover:bg-white hover:text-black transition-all">
-                Retour à l&apos;accueil
+        <div className="min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center font-serif text-white p-12 text-center">
+            <h2 className="text-4xl mb-6 tracking-tight">Oups...</h2>
+            <p className="text-neutral-500 italic mb-10 max-w-md">{error || "Invitation introuvable"}</p>
+            <a href="/" className="text-[10px] uppercase tracking-[0.4em] border border-white/10 px-10 py-5 hover:bg-white hover:text-black hover:border-white transition-all duration-500">
+                Retour à la galerie
             </a>
         </div>
     );
 
     return (
-        <main className="min-h-screen bg-[#0a0a0a] overflow-x-hidden">
+        <main className="min-h-[100dvh] bg-[#0a0a0a] overflow-hidden">
             <AudioPlayer url={data.musicUrl} />
 
             <EnvelopeWrapper
@@ -60,9 +72,9 @@ function InvitationContent({ token }: { token: string }) {
                 />
             </EnvelopeWrapper>
 
-            {/* Background Decor */}
-            <div className="fixed inset-0 pointer-events-none opacity-20 z-0">
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#ffffff10_0%,transparent_50%)]" />
+            {/* Subtle background texture */}
+            <div className="fixed inset-0 pointer-events-none opacity-30 z-0">
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#ffffff05_0%,transparent_70%)]" />
             </div>
         </main>
     );
