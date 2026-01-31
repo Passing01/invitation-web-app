@@ -30,9 +30,9 @@ export default function TemplatesPage() {
             >
               {/* Image Container */}
               <div className="aspect-[4/5] overflow-hidden relative">
-                <img
+                <video
                   src={template.previewUrl}
-                  alt={template.name}
+                  // alt={template.name}
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent opacity-60" />
