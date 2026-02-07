@@ -89,8 +89,14 @@ export function MultiPageInvitation({
     };
 
     return (
-        <div className="fixed inset-0 w-full h-full flex flex-col items-center bg-black">
-            <div className="relative w-full h-full overflow-hidden">
+        <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-black overflow-hidden">
+            {/* Ambient Background for PC */}
+            <div
+                className="absolute inset-0 opacity-30 blur-3xl scale-110 pointer-events-none transition-colors duration-1000 hidden md:block"
+                style={{ backgroundColor: config.bgColor }}
+            />
+
+            <div className="relative w-full h-full md:max-w-[450px] md:h-[90dvh] md:rounded-[40px] md:shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden bg-black z-10 transition-all duration-700">
                 <AnimatePresence
                     initial={false}
                     custom={direction}

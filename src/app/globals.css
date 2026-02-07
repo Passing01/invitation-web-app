@@ -20,11 +20,73 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, .font-serif {
+h1,
+h2,
+h3,
+h4,
+.font-serif {
   font-family: var(--font-serif);
 }
 
 ::selection {
   background: #D4AF37;
   color: white;
+}
+
+.clay {
+  background: white;
+  border-radius: 40px;
+  box-shadow:
+    35px 35px 70px #bebebe,
+    -35px -35px 70px #ffffff,
+    inset 10px 10px 20px rgba(255, 255, 255, 0.5),
+    inset -10px -10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.clay-pink {
+  background: #F265B0;
+  box-shadow:
+    inset 4px 4px 12px rgba(255, 255, 255, 0.4),
+    inset -4px -4px 12px rgba(0, 0, 0, 0.1),
+    0 10px 20px rgba(242, 101, 176, 0.3);
+}
+
+.clay-blue {
+  background: #4BC9FF;
+  box-shadow:
+    inset 4px 4px 12px rgba(255, 255, 255, 0.4),
+    inset -4px -4px 12px rgba(0, 0, 0, 0.1),
+    0 10px 20px rgba(75, 201, 255, 0.3);
+}
+
+.text-clay {
+  text-shadow:
+    0 1px 0 #cccccc,
+    0 2px 0 #c5c5c5,
+    0 3px 0 #bbbbbb,
+    0 4px 0 #b9b9b9,
+    0 5px 0 #aaaaaa,
+    0 6px 1px rgba(0, 0, 0, .1),
+    0 0 5px rgba(0, 0, 0, .1),
+    0 1px 3px rgba(0, 0, 0, .3),
+    0 3px 5px rgba(0, 0, 0, .2),
+    0 5px 10px rgba(0, 0, 0, .25),
+    0 10px 10px rgba(0, 0, 0, .2),
+    0 20px 20px rgba(0, 0, 0, .15);
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }

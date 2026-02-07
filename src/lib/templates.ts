@@ -262,5 +262,40 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
                 ]
             }
         ]
+    },
+    sweet_sixteen: {
+        id: 'sweet_sixteen',
+        numericId: 8,
+        name: 'Sweet Sixteen',
+        description: 'Style Claymorphic moderne, ludique et coloré pour vos anniversaires.',
+        previewUrl: '/birthday.mp4',
+        bgColor: '#FFDAF1',
+        accentColor: '#F265B0',
+        fonts: ['Fredoka+One', 'Comfortaa'],
+        pages: [
+            {
+                id: 'cover',
+                title: 'Invitation',
+                elements: [
+                    { id: 'top_text', type: 'text', x: 50, y: 15, style: { fontSize: 14, fontFamily: 'Comfortaa', color: '#F265B0', textAlign: 'center', letterSpacing: '0.2em' }, content: 'CELEBRATING' },
+                    { id: 'celebrant_name', type: 'text', x: 50, y: 22, style: { fontSize: 24, fontFamily: 'Fredoka One', color: '#F265B0', textAlign: 'center' } },
+                    { id: 'sweet_text', type: 'text', x: 50, y: 38, style: { fontSize: 50, fontFamily: 'Fredoka One', color: '#F265B0', textAlign: 'center' }, content: 'SWEET' },
+                    { id: 'age', type: 'text', x: 50, y: 56, style: { fontSize: 160, fontFamily: 'Fredoka One', color: '#F265B0', textAlign: 'center' } },
+                    { id: 'anniversary_text', type: 'text', x: 50, y: 74, style: { fontSize: 42, fontFamily: 'Fredoka One', color: '#4BC9FF', textAlign: 'center' }, content: 'ANNIVERSARY' },
+                    { id: 'date_text', type: 'text', x: 50, y: 88, style: { fontSize: 18, fontFamily: 'Comfortaa', color: '#F265B0', textAlign: 'center' } }
+                ]
+            },
+            {
+                id: 'details',
+                title: 'Où & Quand',
+                elements: [
+                    { id: 'section-title', type: 'text', x: 50, y: 15, style: { fontSize: 32, fontFamily: 'Fredoka One', color: '#F265B0', textAlign: 'center' }, content: 'C\'EST ICI !' },
+                    { id: 'date', type: 'text', x: 50, y: 35, style: { fontSize: 32, fontFamily: 'Fredoka One', color: '#1a1a1a', textAlign: 'center' } },
+                    { id: 'location', type: 'text', x: 50, y: 55, style: { fontSize: 22, fontFamily: 'Comfortaa', color: '#1a1a1a', textAlign: 'center', width: 85 } },
+                    { id: 'map', type: 'map', x: 50, y: 80, style: { width: 90 } }
+                ]
+            }
+        ]
     }
 };
+

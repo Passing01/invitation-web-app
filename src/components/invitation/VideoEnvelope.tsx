@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import confetti from 'canvas-confetti';
 
 interface VideoEnvelopeProps {
     children: React.ReactNode;
@@ -29,10 +30,22 @@ export function VideoEnvelope({ children, videoSrc, host }: VideoEnvelopeProps) 
 
     const handleVideoEnd = () => {
         setIsOpened(true);
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#F265B0', '#4BC9FF', '#FFD700']
+        });
     };
 
     const handleSkip = () => {
         setIsOpened(true);
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#F265B0', '#4BC9FF', '#FFD700']
+        });
         if (videoRef.current) {
             videoRef.current.pause();
         }

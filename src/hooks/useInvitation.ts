@@ -61,7 +61,8 @@ export const TEMPLATE_ID_MAP: Record<number, string> = {
   2: 'minimal',
   3: 'floral',
   4: 'vintage',
-  5: 'corporate'
+  5: 'corporate',
+  8: 'sweet_sixteen'
 };
 
 export function useInvitation(token: string) {
@@ -102,10 +103,11 @@ export function useInvitation(token: string) {
           if (token === 'birthday') {
             mockData = {
               ...mockData,
+              template_id: 8,
               event_type: 'birthday',
-              title: "30 Ans de Rayonnement",
-              celebrant_name: "Sophie Valérie",
-              age: 30,
+              title: "Sweet 16th Anniversary",
+              celebrant_name: "Dribbble",
+              age: 16,
               celebrant_photo_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400",
             };
           } else if (token === 'corporate') {

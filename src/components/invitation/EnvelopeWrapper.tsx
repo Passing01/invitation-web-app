@@ -28,8 +28,16 @@ export function EnvelopeWrapper({ children, host, themeColor = "#D4AF37", config
         );
     }
 
+    const isBirthday = config.id === 'sweet_sixteen';
+
     return (
         <div ref={containerRef} className="relative flex items-center justify-center min-h-[100dvh] overflow-hidden bg-[#0f0f0f]">
+            {/* Ambient Background for Envelope Screen */}
+            <div
+                className="absolute inset-0 opacity-20 blur-3xl scale-110 pointer-events-none"
+                style={{ backgroundColor: isBirthday ? '#FFDAF1' : themeColor }}
+            />
+
             <AnimatePresence>
                 {!isFullyOpen && (
                     <motion.div
@@ -83,19 +91,22 @@ export function EnvelopeWrapper({ children, host, themeColor = "#D4AF37", config
                                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30"
                                 >
                                     <div
-                                        className="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center bg-gradient-to-br from-[#D4AF37] via-[#f5d061] to-[#b8860b] border border-white/20"
+                                        className="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center border border-white/20"
+                                        style={{ background: `linear-gradient(135deg, ${themeColor}, ${isBirthday ? '#4BC9FF' : themeColor})` }}
                                     >
                                         <span className="text-white font-serif text-2xl drop-shadow-md">
-                                            {host.charAt(0)}
+                                            {isBirthday ? "🎂" : host.charAt(0)}
                                         </span>
                                     </div>
                                 </motion.div>
 
                                 {/* Label */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center z-0">
-                                    <span className="text-[10px] uppercase tracking-[0.4em] font-light text-neutral-400 mb-2">Invitation Exclusive</span>
+                                    <span className="text-[10px] uppercase tracking-[0.4em] font-light text-neutral-400 mb-2">
+                                        {isBirthday ? "Invitation d'Anniversaire" : "Invitation Exclusive"}
+                                    </span>
                                     <h2 className="text-xl md:text-2xl font-serif text-neutral-800 tracking-tight">{host}</h2>
-                                    <div className="mt-6 w-12 h-[1px] bg-[#D4AF37]" />
+                                    <div className="mt-6 w-12 h-[1px]" style={{ backgroundColor: themeColor }} />
                                 </div>
                             </div>
                         </div>

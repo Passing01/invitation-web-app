@@ -5,8 +5,9 @@ import { QRCodeSVG } from 'qrcode.react';
 import { TemplateConfig, TemplateElement, TemplatePage } from '@/lib/templates';
 import { cn, formatDate } from '@/lib/utils';
 import { RSVPForm } from './RSVPForm';
-import { MapPin, Clock, Gift, Copy, Check } from 'lucide-react';
+import { MapPin, Clock, Gift, Copy, Check, Star, Sparkles } from 'lucide-react';
 import { LaravelInvitationResponse } from '@/hooks/useInvitation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface DynamicTemplateRendererProps {
     page: TemplatePage;
@@ -102,6 +103,7 @@ export function DynamicTemplateRenderer({
     containerWidth,
 }: DynamicTemplateRendererProps) {
     const scale = containerWidth / 500;
+    const isBirthday = config.id === 'sweet_sixteen';
 
     const renderElement = (element: TemplateElement) => {
         const commonStyles: React.CSSProperties = {
@@ -113,22 +115,17 @@ export function DynamicTemplateRenderer({
             zIndex: 10,
         };
 
-        if (element.type === 'text') {
-            let content = element.content || '';
+        let content = element.content || '';
+        const loc = eventData.location || (eventData.locations && eventData.locations[0]);
 
-            // Dynamic Mapping based on event_type
+        if (element.type === 'text') {
             switch (element.id) {
                 case 'title': content = eventData.title; break;
                 case 'host': content = eventData.host || eventData.title; break;
                 case 'date': content = formatDate(eventData.event_date); break;
-                case 'location':
-                    const loc = eventData.location || (eventData.locations && eventData.locations[0]);
-                    content = loc ? `${loc.name}\n${loc.address}` : '';
-                    break;
+                case 'location': content = loc ? `${loc.name}\n${loc.address}` : ''; break;
                 case 'dress_code': content = eventData.dress_code || ''; break;
                 case 'hashtag': content = eventData.custom_data?.hashtag || ''; break;
-
-                // Wedding specific
                 case 'names':
                 case 'couple_names':
                     if (eventData.event_type === 'wedding') {
@@ -139,154 +136,120 @@ export function DynamicTemplateRenderer({
                         content = eventData.company_name || '';
                     }
                     break;
-                case 'groom_name': content = eventData.groom_name || ''; break;
-                case 'bride_name': content = eventData.bride_name || ''; break;
-
-                // Birthday specific
-                case 'celebrant_name': content = eventData.celebrant_name || ''; break;
-                case 'age': content = eventData.age ? `${eventData.age} Ans` : ''; break;
-
-                // Corporate specific
-                case 'company_name': content = eventData.company_name || ''; break;
-                case 'agenda':
-                    if (Array.isArray(eventData.agenda)) {
-                        content = eventData.agenda.join('\n');
-                    } else {
-                        content = eventData.agenda || '';
-                    }
+                case 'celebrant_name':
+                    content = (eventData.celebrant_name || 'DRIBBBLE').toUpperCase() + "'S";
+                    break;
+                case 'age':
+                    content = eventData.age?.toString() || '16';
+                    break;
+                case 'date_text':
+                    content = eventData.event_date ? new Date(eventData.event_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '6 AVRIL 2026';
                     break;
             }
-
-            return (
-                <div
-                    key={element.id}
-                    style={{
-                        ...commonStyles,
-                        fontSize: `${(element.style.fontSize || 16) * scale}px`,
-                        fontFamily: element.style.fontFamily,
-                        fontWeight: element.style.fontWeight,
-                        color: element.style.color,
-                        textAlign: element.style.textAlign,
-                        letterSpacing: element.style.letterSpacing,
-                        textTransform: element.style.textTransform,
-                        fontStyle: element.style.italic ? 'italic' : 'normal',
-                        whiteSpace: 'pre-line',
-                    }}
-                >
-                    {content}
-                </div>
-            );
         }
 
-        if (element.type === 'image') {
-            const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400';
-            const FALLBACK_LOGO = 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=400';
-
-            let src = element.content || FALLBACK_PHOTO;
-
-            // Mapping dynamic images based on ID and Event Type
-            if (eventData.event_type === 'wedding') {
-                if (element.id === 'photo' || element.id === 'couple_photo') {
-                    // Two photos côte à côte if it's a wedding and we have both
-                    return (
-                        <div key={element.id} style={{ ...commonStyles, width: '90%', left: '50%' }} className="flex justify-center gap-4">
-                            <div className="w-[45%] aspect-[3/4] rounded-full border-2 border-white/20 shadow-xl overflow-hidden bg-neutral-900">
-                                <img
-                                    src={eventData.groom_photo_url || FALLBACK_PHOTO}
-                                    alt="Groom"
-                                    className="w-full h-full object-cover"
-                                    crossOrigin="anonymous"
-                                />
+        return (
+            <motion.div
+                key={element.id}
+                initial={isBirthday ? { scale: 0, opacity: 0, y: 50 } : { opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={isBirthday ? {
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                    delay: (element.y / 100) * 0.5
+                } : { duration: 0.8 }}
+                style={commonStyles}
+                className={cn(
+                    isBirthday && "text-clay",
+                    element.id === 'age' && isBirthday && "animate-float"
+                )}
+            >
+                {element.type === 'text' && (
+                    <div
+                        style={{
+                            fontSize: `${(element.style.fontSize || 16) * scale}px`,
+                            fontFamily: element.style.fontFamily,
+                            fontWeight: element.style.fontWeight,
+                            color: element.style.color,
+                            textAlign: element.style.textAlign,
+                            letterSpacing: element.style.letterSpacing,
+                            textTransform: element.style.textTransform,
+                            fontStyle: element.style.italic ? 'italic' : 'normal',
+                            whiteSpace: 'pre-line',
+                        }}
+                    >
+                        {element.id === 'basketball' ? (
+                            <div className="animate-float">
+                                <svg width={(element.style.fontSize || 40) * scale} height={(element.style.fontSize || 40) * scale} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-basketball">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M4.9 19.1C3.1 17.3 2 14.8 2 12c0-5.5 4.5-10 10-10 2.8 0 5.3 1.1 7.1 2.9" />
+                                    <path d="M14.2 14.2c.4-.4.8-.9 1-1.4" />
+                                    <path d="M14.2 14.2c-.4.4-.9.8-1.4 1" />
+                                    <path d="M14.2 14.2c3.4 3.4 4.8 7.8 4.8 7.8" />
+                                    <path d="M9.8 9.8c-.4.4-.8.9-1 1.4" />
+                                    <path d="M9.8 9.8c.4-.4.9-.8 1.4-1" />
+                                    <path d="M9.8 9.8c-3.4-3.4-4.8-7.8-4.8-7.8" />
+                                </svg>
                             </div>
-                            <div className="w-[45%] aspect-[3/4] rounded-full border-2 border-white/20 shadow-xl overflow-hidden bg-neutral-900">
-                                <img
-                                    src={eventData.bride_photo_url || FALLBACK_PHOTO}
-                                    alt="Bride"
-                                    className="w-full h-full object-cover"
-                                    crossOrigin="anonymous"
-                                />
-                            </div>
-                        </div>
-                    );
-                }
-                if (element.id === 'groom_photo') src = eventData.groom_photo_url || FALLBACK_PHOTO;
-                if (element.id === 'bride_photo') src = eventData.bride_photo_url || FALLBACK_PHOTO;
-            } else if (eventData.event_type === 'birthday') {
-                if (element.id === 'photo' || element.id === 'celebrant_photo') {
-                    src = eventData.celebrant_photo_url || FALLBACK_PHOTO;
-                }
-            } else if (eventData.event_type === 'corporate') {
-                if (element.id === 'logo' || element.id === 'company_logo') {
-                    src = eventData.company_logo_url || FALLBACK_LOGO;
-                }
-            }
+                        ) : (
+                            content || (element.id === 'age' ? '16' : element.id === 'celebrant_name' ? 'VOTRE NOM' : '')
+                        )}
+                    </div>
+                )}
 
-            return (
-                <div key={element.id} style={{ ...commonStyles, aspectRatio: eventData.event_type === 'corporate' ? 'auto' : '1/1', overflow: 'hidden' }} className={cn(
-                    "border-2 border-white/20 shadow-xl bg-neutral-900",
-                    eventData.event_type === 'corporate' ? "rounded-lg" : "rounded-full"
-                )}>
-                    <img src={src} alt="" className="w-full h-full object-cover" crossOrigin="anonymous" />
-                </div>
-            );
-        }
+                {element.type === 'image' && (
+                    <div
+                        style={{ aspectRatio: eventData.event_type === 'corporate' ? 'auto' : '1/1', overflow: 'hidden' }}
+                        className={cn(
+                            "border-2 border-white/20 shadow-xl bg-neutral-900",
+                            eventData.event_type === 'corporate' ? "rounded-lg" : "rounded-full"
+                        )}
+                    >
+                        <img
+                            src={element.id === 'photo' || element.id === 'celebrant_photo' ? (eventData.celebrant_photo_url || '') : (element.content || '')}
+                            alt=""
+                            className="w-full h-full object-cover"
+                            crossOrigin="anonymous"
+                        />
+                    </div>
+                )}
 
-        if (element.type === 'qrcode') {
-            const qrSize = (element.style.width || 100) * scale * 2;
-            return (
-                <div key={element.id} style={commonStyles}>
+                {element.type === 'qrcode' && (
                     <div className="bg-white p-2 rounded-lg inline-block shadow-lg">
                         <QRCodeSVG
-                            value={`https://luxury-invitation.com/pass/${eventData.template_id}`} // Example
-                            size={qrSize}
+                            value={`https://luxury-invitation.com/pass/${eventData.template_id}`}
+                            size={(element.style.width || 100) * scale * 2}
                             level="H"
                             fgColor="#1a1a1a"
                         />
                     </div>
-                </div>
-            );
-        }
+                )}
 
-        if (element.type === 'rsvp-form') {
-            const isLight = config.bgColor === '#ffffff' || config.bgColor === '#fffafb' || config.bgColor === '#f4e0c8' || config.bgColor === '#f0f4f8';
-            return (
-                <div key={element.id} style={commonStyles} className="w-full px-4">
+                {element.type === 'rsvp-form' && (
                     <div className={cn(
                         "backdrop-blur-md p-6 border rounded-2xl shadow-xl",
-                        isLight ? "bg-black/5 border-black/10 text-black" : "bg-white/5 border-white/10 text-white"
+                        (config.bgColor === '#ffffff' || config.bgColor === '#fffafb' || config.bgColor === '#f4e0c8' || config.bgColor === '#f0f4f8')
+                            ? "bg-black/5 border-black/10 text-black"
+                            : "bg-white/5 border-white/10 text-white"
                     )}>
                         <RSVPForm
-                            variant={isLight ? 'light' : 'dark'}
+                            variant={(config.bgColor === '#ffffff' || config.bgColor === '#fffafb' || config.bgColor === '#f4e0c8' || config.bgColor === '#f0f4f8') ? 'light' : 'dark'}
                             eventData={eventData}
                             onSubmit={(data) => console.log('RSVP:', data)}
                         />
                     </div>
-                </div>
-            );
-        }
+                )}
 
-        if (element.type === 'countdown') {
-            return (
-                <div key={element.id} style={commonStyles} className="w-full">
+                {element.type === 'countdown' && (
                     <Countdown targetDate={eventData.event_date} color={config.accentColor} />
-                </div>
-            );
-        }
+                )}
 
-        if (element.type === 'gift-list') {
-            return (
-                <div key={element.id} style={commonStyles} className="w-full px-4">
+                {element.type === 'gift-list' && (
                     <GiftList iban={eventData.custom_data?.gift_list_iban as string} color={config.accentColor} />
-                </div>
-            );
-        }
+                )}
 
-        if (element.type === 'map') {
-            const loc = eventData.location || (eventData.locations && eventData.locations[0]);
-            if (!loc) return null;
-
-            return (
-                <div key={element.id} style={commonStyles} className="w-full px-4">
+                {element.type === 'map' && loc && (
                     <div
                         onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`, '_blank')}
                         className="aspect-video bg-neutral-800 rounded-xl overflow-hidden relative cursor-pointer group border border-white/10"
@@ -297,11 +260,9 @@ export function DynamicTemplateRenderer({
                             <span className="text-xs uppercase tracking-widest font-serif">Ouvrir dans Maps</span>
                         </div>
                     </div>
-                </div>
-            );
-        }
-
-        return null;
+                )}
+            </motion.div>
+        );
     };
 
     const [mounted, setMounted] = React.useState(false);
@@ -360,10 +321,38 @@ export function DynamicTemplateRenderer({
                 </div>
             )}
 
+            {/* Birthday Decorations for Sweet Sixteen */}
+            {mounted && isBirthday && page.id === 'cover' && (
+                <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+                    <Star size={40} className="absolute top-[10%] left-[10%] text-yellow-400 opacity-60 animate-float" style={{ animationDelay: '0s' }} />
+                    <Star size={30} className="absolute top-[20%] right-[15%] text-pink-400 opacity-60 animate-float" style={{ animationDelay: '1s' }} />
+                    <Sparkles size={35} className="absolute bottom-[20%] left-[15%] text-blue-400 opacity-60 animate-float" style={{ animationDelay: '2s' }} />
+                    <Star size={25} className="absolute bottom-[10%] right-[10%] text-yellow-300 opacity-60 animate-float" style={{ animationDelay: '3s' }} />
+                    <div className="absolute top-[40%] left-[5%] w-8 h-8 rounded-full bg-pink-300 opacity-40 blur-sm animate-float" />
+                    <div className="absolute top-[60%] right-[5%] w-12 h-12 rounded-lg bg-blue-300 opacity-30 blur-sm rotate-12 animate-float" />
+                </div>
+            )}
+
             <div className={cn(
-                "relative z-10 p-8 md:p-20 flex flex-col",
-                page.id === 'dashboard' ? "min-h-screen h-[200%]" : "h-full" // Allow dashboard to be taller
-            )}>
+                "relative z-10 flex flex-col",
+                isBirthday ? "h-[90%] w-[90%] m-auto rounded-[40px] shadow-2xl p-6 overflow-hidden" : (page.id === 'dashboard' ? "min-h-screen h-[200%] p-8 md:p-20" : "h-full p-8 md:p-20")
+            )}
+                style={isBirthday ? {
+                    backgroundColor: 'white',
+                    backgroundImage: `url(${eventData.celebrant_photo_url || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800'})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                } : {}}>
+                {isBirthday && (
+                    <>
+                        {/* Semi-transparent overlay to keep text readable */}
+                        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-0" />
+                        <div className="absolute inset-0 pointer-events-none opacity-20 z-10">
+                            <div className="absolute -top-10 -left-10 w-40 h-40 bg-pink-400 rounded-full blur-3xl" />
+                            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-400 rounded-full blur-3xl" />
+                        </div>
+                    </>
+                )}
                 {page.elements.map(renderElement)}
             </div>
 

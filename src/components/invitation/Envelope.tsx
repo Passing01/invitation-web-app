@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import confetti from 'canvas-confetti';
 
 interface EnvelopeProps {
     children: React.ReactNode;
@@ -15,6 +16,12 @@ export function Envelope({ children, host }: EnvelopeProps) {
 
     const handleOpen = () => {
         setIsBreaking(true);
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#F265B0', '#4BC9FF', '#FFD700']
+        });
         setTimeout(() => setIsOpen(true), 800);
     };
 
