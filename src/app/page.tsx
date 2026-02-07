@@ -40,7 +40,7 @@ export default function TemplatesPage() {
                 {/* Badge */}
                 <div className="absolute top-6 right-6">
                   <span className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] uppercase tracking-widest border border-white/10">
-                    5 Pages
+                    {template.pages.length} Pages
                   </span>
                 </div>
               </div>

@@ -4,16 +4,29 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
+import { TemplateConfig } from '@/lib/templates';
+import { VideoEnvelope } from './VideoEnvelope';
+
 interface EnvelopeWrapperProps {
     children: React.ReactNode;
     host: string;
     themeColor?: string;
+    config: TemplateConfig;
 }
 
-export function EnvelopeWrapper({ children, host, themeColor = "#D4AF37" }: EnvelopeWrapperProps) {
+export function EnvelopeWrapper({ children, host, themeColor = "#D4AF37", config }: EnvelopeWrapperProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isFullyOpen, setIsFullyOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    // If the template has a video opening, use the VideoEnvelope component
+    if (config.openingVideoUrl) {
+        return (
+            <VideoEnvelope videoSrc={config.openingVideoUrl} host={host}>
+                {children}
+            </VideoEnvelope>
+        );
+    }
 
     return (
         <div ref={containerRef} className="relative flex items-center justify-center min-h-[100dvh] overflow-hidden bg-[#0f0f0f]">
@@ -28,12 +41,12 @@ export function EnvelopeWrapper({ children, host, themeColor = "#D4AF37" }: Enve
                             y: -500,
                             transition: { duration: 1.2, ease: [0.4, 0, 0.2, 1] }
                         }}
-                        className="z-50 w-whole max-w-lg cursor-pointer perspective-1000"
+                        className="z-50 w-full max-w-lg px-4 cursor-pointer perspective-1000"
                         onClick={() => setIsOpen(true)}
                     >
                         <div className="relative preserve-3d">
                             {/* Back of Envelope */}
-                            <div className="relative aspect-[4/3] bg-[#fdfaf5] shadow-2xl">
+                            <div className="relative aspect-[4/3] bg-[#fdfaf5] shadow-2xl rounded-sm">
                                 {/* Internal Content Peek */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center p-8 opacity-40">
                                     <div className="w-32 h-40 border border-neutral-300 rounded shadow-sm bg-white/50" />
@@ -70,21 +83,19 @@ export function EnvelopeWrapper({ children, host, themeColor = "#D4AF37" }: Enve
                                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30"
                                 >
                                     <div
-                                        className="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center"
-                                        style={{ backgroundColor: themeColor }}
+                                        className="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center bg-gradient-to-br from-[#D4AF37] via-[#f5d061] to-[#b8860b] border border-white/20"
                                     >
-                                        <div className="w-14 h-14 rounded-full border-2 border-white/20 flex items-center justify-center">
-                                            <span className="text-white font-serif text-2xl drop-shadow-md">
-                                                {host.charAt(0)}
-                                            </span>
-                                        </div>
+                                        <span className="text-white font-serif text-2xl drop-shadow-md">
+                                            {host.charAt(0)}
+                                        </span>
                                     </div>
                                 </motion.div>
 
                                 {/* Label */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center z-0">
-                                    <span className="text-[10px] uppercase tracking-[0.4em] font-light text-neutral-400 mb-2">Invitation pour</span>
-                                    <h2 className="text-xl font-serif text-neutral-800 tracking-tight">{host}</h2>
+                                    <span className="text-[10px] uppercase tracking-[0.4em] font-light text-neutral-400 mb-2">Invitation Exclusive</span>
+                                    <h2 className="text-xl md:text-2xl font-serif text-neutral-800 tracking-tight">{host}</h2>
+                                    <div className="mt-6 w-12 h-[1px] bg-[#D4AF37]" />
                                 </div>
                             </div>
                         </div>

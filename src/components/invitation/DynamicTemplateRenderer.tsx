@@ -5,7 +5,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { TemplateConfig, TemplateElement, TemplatePage } from '@/lib/templates';
 import { cn, formatDate } from '@/lib/utils';
 import { RSVPForm } from './RSVPForm';
-import { MapPin } from 'lucide-react';
+import { MapPin, Clock, Gift, Copy, Check } from 'lucide-react';
 import { LaravelInvitationResponse } from '@/hooks/useInvitation';
 
 interface DynamicTemplateRendererProps {
@@ -13,6 +13,86 @@ interface DynamicTemplateRendererProps {
     config: TemplateConfig;
     eventData: LaravelInvitationResponse;
     containerWidth: number;
+}
+
+function Countdown({ targetDate, color }: { targetDate: string, color: string }) {
+    const [timeLeft, setTimeLeft] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+    React.useEffect(() => {
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = new Date(targetDate).getTime() - now;
+
+            if (distance < 0) {
+                clearInterval(timer);
+                return;
+            }
+
+            setTimeLeft({
+                days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+                seconds: Math.floor((distance % (1000 * 60)) / 1000)
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [targetDate]);
+
+    const items = [
+        { label: 'Jours', value: timeLeft.days },
+        { label: 'Heures', value: timeLeft.hours },
+        { label: 'Min', value: timeLeft.minutes },
+        { label: 'Sec', value: timeLeft.seconds },
+    ];
+
+    return (
+        <div className="flex gap-4 justify-center py-6">
+            {items.map((item, i) => (
+                <div key={i} className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
+                        <span className="text-2xl font-serif" style={{ color }}>{item.value}</span>
+                    </div>
+                    <span className="text-[10px] uppercase tracking-widest mt-2 opacity-40">{item.label}</span>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function GiftList({ iban, color }: { iban?: string, color: string }) {
+    const [copied, setCopied] = React.useState(false);
+
+    const handleCopy = () => {
+        if (!iban) return;
+        navigator.clipboard.writeText(iban);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+            <div className="flex items-center gap-3 mb-4">
+                <Gift size={20} style={{ color }} />
+                <h3 className="font-serif text-lg">Contribution / Liste</h3>
+            </div>
+            <p className="text-sm opacity-60 mb-6 leading-relaxed">
+                Votre présence est notre plus beau cadeau, mais si vous souhaitez nous témoigner une attention particulière...
+            </p>
+            {iban && (
+                <div
+                    onClick={handleCopy}
+                    className="flex items-center justify-between p-4 rounded-xl bg-black/40 border border-white/5 cursor-pointer hover:bg-black/60 transition-all group"
+                >
+                    <div className="flex flex-col">
+                        <span className="text-[10px] uppercase tracking-widest opacity-40 mb-1">IBAN de la liste</span>
+                        <span className="text-xs font-mono tracking-wider truncate max-w-[200px]">{iban}</span>
+                    </div>
+                    {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} className="opacity-40 group-hover:opacity-100 transition-opacity" />}
+                </div>
+            )}
+        </div>
+    );
 }
 
 export function DynamicTemplateRenderer({
@@ -52,7 +132,7 @@ export function DynamicTemplateRenderer({
                 case 'names':
                 case 'couple_names':
                     if (eventData.event_type === 'wedding') {
-                        content = `${eventData.groom_name || 'Groom'} & ${eventData.bride_name || 'Bride'}`;
+                        content = `${eventData.groom_name || 'Mari'} & ${eventData.bride_name || 'Femme'}`;
                     } else if (eventData.event_type === 'birthday') {
                         content = eventData.celebrant_name || '';
                     } else if (eventData.event_type === 'corporate') {
@@ -111,10 +191,20 @@ export function DynamicTemplateRenderer({
                     return (
                         <div key={element.id} style={{ ...commonStyles, width: '90%', left: '50%' }} className="flex justify-center gap-4">
                             <div className="w-[45%] aspect-[3/4] rounded-full border-2 border-white/20 shadow-xl overflow-hidden bg-neutral-900">
-                                <img src={eventData.groom_photo_url || FALLBACK_PHOTO} alt="Groom" className="w-full h-full object-cover" />
+                                <img
+                                    src={eventData.groom_photo_url || FALLBACK_PHOTO}
+                                    alt="Groom"
+                                    className="w-full h-full object-cover"
+                                    crossOrigin="anonymous"
+                                />
                             </div>
                             <div className="w-[45%] aspect-[3/4] rounded-full border-2 border-white/20 shadow-xl overflow-hidden bg-neutral-900">
-                                <img src={eventData.bride_photo_url || FALLBACK_PHOTO} alt="Bride" className="w-full h-full object-cover" />
+                                <img
+                                    src={eventData.bride_photo_url || FALLBACK_PHOTO}
+                                    alt="Bride"
+                                    className="w-full h-full object-cover"
+                                    crossOrigin="anonymous"
+                                />
                             </div>
                         </div>
                     );
@@ -136,7 +226,7 @@ export function DynamicTemplateRenderer({
                     "border-2 border-white/20 shadow-xl bg-neutral-900",
                     eventData.event_type === 'corporate' ? "rounded-lg" : "rounded-full"
                 )}>
-                    <img src={src} alt="" className="w-full h-full object-cover" />
+                    <img src={src} alt="" className="w-full h-full object-cover" crossOrigin="anonymous" />
                 </div>
             );
         }
@@ -147,7 +237,7 @@ export function DynamicTemplateRenderer({
                 <div key={element.id} style={commonStyles}>
                     <div className="bg-white p-2 rounded-lg inline-block shadow-lg">
                         <QRCodeSVG
-                            value={`https://votre-app.com/pass/${eventData.template_id}`} // Example
+                            value={`https://luxury-invitation.com/pass/${eventData.template_id}`} // Example
                             size={qrSize}
                             level="H"
                             fgColor="#1a1a1a"
@@ -175,6 +265,22 @@ export function DynamicTemplateRenderer({
             );
         }
 
+        if (element.type === 'countdown') {
+            return (
+                <div key={element.id} style={commonStyles} className="w-full">
+                    <Countdown targetDate={eventData.event_date} color={config.accentColor} />
+                </div>
+            );
+        }
+
+        if (element.type === 'gift-list') {
+            return (
+                <div key={element.id} style={commonStyles} className="w-full px-4">
+                    <GiftList iban={eventData.custom_data?.gift_list_iban as string} color={config.accentColor} />
+                </div>
+            );
+        }
+
         if (element.type === 'map') {
             const loc = eventData.location || (eventData.locations && eventData.locations[0]);
             if (!loc) return null;
@@ -198,11 +304,31 @@ export function DynamicTemplateRenderer({
         return null;
     };
 
+    const [mounted, setMounted] = React.useState(false);
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const particles = React.useMemo(() => {
+        if (!mounted) return [];
+        return [...Array(20)].map((_, i) => ({
+            id: i,
+            width: Math.random() * 10 + 5 + 'px',
+            height: Math.random() * 10 + 5 + 'px',
+            left: Math.random() * 100 + '%',
+            delay: Math.random() * 10 + 's',
+            duration: Math.random() * 10 + 10 + 's',
+        }));
+    }, [mounted]);
+
     return (
         <div
-            className="relative overflow-hidden w-full h-full"
+            className={cn(
+                "relative overflow-hidden w-full transition-colors duration-1000",
+                page.id === 'dashboard' ? "min-h-screen h-auto" : "h-full"
+            )}
             style={{
-                backgroundColor: config.bgColor,
+                backgroundColor: page.bgColor || config.bgColor,
             }}
         >
             <div
@@ -212,10 +338,46 @@ export function DynamicTemplateRenderer({
                     opacity: (page.bgUrl || config.bgUrl) ? 1 : 0
                 }}
             />
-            <div className="absolute inset-0 bg-black/10 pointer-events-none" />
-            <div className="absolute inset-0 z-10 p-8 md:p-20 flex flex-col">
+            <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+
+            {/* Sakura Particles for story-like feel */}
+            {mounted && (page.id.startsWith('story') || config.id === 'majestic_story') && page.id !== 'dashboard' && (
+                <div className="absolute inset-0 pointer-events-none z-20">
+                    {particles.map((p) => (
+                        <div
+                            key={p.id}
+                            className="absolute bg-pink-200/40 rounded-full blur-[1px] animate-float-sakura"
+                            style={{
+                                width: p.width,
+                                height: p.height,
+                                left: p.left,
+                                top: -20 + 'px',
+                                animationDelay: p.delay,
+                                animationDuration: p.duration,
+                            }}
+                        />
+                    ))}
+                </div>
+            )}
+
+            <div className={cn(
+                "relative z-10 p-8 md:p-20 flex flex-col",
+                page.id === 'dashboard' ? "min-h-screen h-[200%]" : "h-full" // Allow dashboard to be taller
+            )}>
                 {page.elements.map(renderElement)}
             </div>
+
+            <style jsx>{`
+                @keyframes floatSakura {
+                    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+                    10% { opacity: 1; }
+                    90% { opacity: 1; }
+                    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+                }
+                .animate-float-sakura {
+                    animation: floatSakura linear infinite;
+                }
+            `}</style>
             <link
                 rel="stylesheet"
                 href={`https://fonts.googleapis.com/css2?family=${config.fonts.join('&family=')}&display=swap`}

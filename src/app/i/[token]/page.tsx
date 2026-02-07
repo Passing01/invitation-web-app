@@ -64,6 +64,7 @@ function InvitationContent({ token }: { token: string }) {
             <EnvelopeWrapper
                 host={data.host || data.title}
                 themeColor={currentTemplate.accentColor}
+                config={currentTemplate}
             >
                 <MultiPageInvitation
                     config={currentTemplate}

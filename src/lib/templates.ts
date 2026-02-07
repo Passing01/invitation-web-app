@@ -1,6 +1,6 @@
 export interface TemplateElement {
     id: string;
-    type: 'text' | 'image' | 'qrcode' | 'rsvp-form' | 'map';
+    type: 'text' | 'image' | 'qrcode' | 'rsvp-form' | 'map' | 'countdown' | 'gift-list';
     x: number; // percentage 0-100
     y: number; // percentage 0-100
     style: {
@@ -21,6 +21,7 @@ export interface TemplatePage {
     id: string;
     title: string;
     bgUrl?: string;
+    bgColor?: string;
     elements: TemplateElement[];
 }
 
@@ -34,6 +35,7 @@ export interface TemplateConfig {
     bgColor: string;
     accentColor: string;
     fonts: string[];
+    openingVideoUrl?: string;
     pages: TemplatePage[];
 }
 
@@ -102,7 +104,7 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
         numericId: 2,
         name: 'Minimal Modern',
         description: 'Simplicité, clarté et typographie audacieuse.',
-        previewUrl: 'video2.mp4',
+        previewUrl: '/video2.mp4',
         bgColor: '#ffffff',
         accentColor: '#1a1a1a',
         fonts: ['Inter', 'Montserrat'],
@@ -119,7 +121,7 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
         numericId: 3,
         name: 'Jardin Floral',
         description: 'Aquarelle, douceur et romantisme pour vos moments.',
-        previewUrl: 'video3.mp4',
+        previewUrl: '/video3.mp4',
         bgColor: '#fffafb',
         accentColor: '#b27b8d',
         fonts: ['Great+Vibes', 'Lato'],
@@ -136,7 +138,7 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
         numericId: 4,
         name: 'Parchemin Antique',
         description: 'Style rétro, papier vieilli et charme d’autrefois.',
-        previewUrl: 'video4.mp4',
+        previewUrl: '/video4.mp4',
         bgColor: '#f4e0c8',
         accentColor: '#4a3728',
         fonts: ['Tangerine', 'Merriweather'],
@@ -153,7 +155,7 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
         numericId: 5,
         name: 'Business Elite',
         description: 'Précision géométrique et professionnalisme moderne.',
-        previewUrl: 'video5.mp4',
+        previewUrl: '/video5.mp4',
         bgColor: '#f0f4f8',
         accentColor: '#003366',
         fonts: ['Roboto', 'Oswald'],
@@ -163,6 +165,102 @@ export const TEMPLATE_STYLES: Record<string, TemplateConfig> = {
             { id: 'location', title: 'Address', elements: [{ id: 'location', type: 'text', x: 50, y: 40, style: { fontSize: 16, fontFamily: 'Roboto', color: '#333333', textAlign: 'center' } }, { id: 'map', type: 'map', x: 50, y: 70, style: { width: 90 } }] },
             { id: 'rsvp', title: 'Register', elements: [{ id: 'rsvp-form', type: 'rsvp-form', x: 50, y: 50, style: { width: 85 } }] },
             { id: 'end', title: 'Network', elements: [{ id: 'thanks', type: 'text', x: 50, y: 50, style: { fontSize: 24, fontFamily: 'Oswald', color: '#003366', textAlign: 'center' }, content: 'JOIN THE NETWORK' }] }
+        ]
+    },
+    storyteller: {
+        id: 'storyteller',
+        numericId: 6,
+        name: 'Éclat de Récit',
+        description: 'Une narration immersive façon "Story" pour raconter votre plus belle histoire.',
+        previewUrl: '/video2.mp4',
+        openingVideoUrl: '/video2.mp4',
+        bgColor: '#fdfaf5',
+        accentColor: '#D4AF37',
+        fonts: ['Cormorant+Garamond', 'Montserrat'],
+        pages: [
+            {
+                id: 'intro',
+                title: 'Notre Histoire',
+                bgUrl: 'https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?auto=format&fit=crop&q=80&w=2000',
+                elements: [
+                    { id: 'story-1', type: 'text', x: 50, y: 80, style: { fontSize: 24, fontFamily: 'Cormorant Garamond', color: '#ffffff', textAlign: 'center', italic: true, width: 80 }, content: 'Tout a commencé un jour ordinaire...' }
+                ]
+            },
+            {
+                id: 'meeting',
+                title: 'La Rencontre',
+                bgUrl: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=2000',
+                elements: [
+                    { id: 'story-2', type: 'text', x: 50, y: 80, style: { fontSize: 24, fontFamily: 'Cormorant Garamond', color: '#ffffff', textAlign: 'center', italic: true, width: 80 }, content: 'Dans un petit café au coin de la rue.' }
+                ]
+            },
+            {
+                id: 'proposal',
+                title: 'L\'Engagement',
+                bgUrl: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=2000',
+                elements: [
+                    { id: 'title', type: 'text', x: 50, y: 40, style: { fontSize: 48, fontFamily: 'Cormorant Garamond', color: '#ffffff', textAlign: 'center', fontWeight: 'bold' } },
+                    { id: 'names', type: 'text', x: 50, y: 55, style: { fontSize: 24, fontFamily: 'Cormorant Garamond', color: '#D4AF37', textAlign: 'center', italic: true } },
+                    { id: 'story-3', type: 'text', x: 50, y: 80, style: { fontSize: 18, fontFamily: 'Montserrat', color: '#ffffff', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.2em' }, content: 'Dites OUI à notre bonheur' }
+                ]
+            },
+            {
+                id: 'details',
+                title: 'Le Jour J',
+                bgUrl: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=2000',
+                elements: [
+                    { id: 'date', type: 'text', x: 50, y: 30, style: { fontSize: 32, fontFamily: 'Cormorant Garamond', color: '#ffffff', textAlign: 'center' } },
+                    { id: 'location', type: 'text', x: 50, y: 50, style: { fontSize: 18, fontFamily: 'Montserrat', color: '#ffffff', textAlign: 'center', width: 80 } },
+                    { id: 'map', type: 'map', x: 50, y: 75, style: { width: 90 } }
+                ]
+            },
+            {
+                id: 'rsvp',
+                title: 'Confirmez',
+                bgColor: '#1a1a1a',
+                elements: [
+                    { id: 'rsvp-title', type: 'text', x: 50, y: 20, style: { fontSize: 28, fontFamily: 'Cormorant Garamond', color: '#D4AF37', textAlign: 'center' }, content: 'Serez-vous des nôtres ?' },
+                    { id: 'rsvp-form', type: 'rsvp-form', x: 50, y: 55, style: { width: 90 } }
+                ]
+            }
+        ]
+    },
+    majestic_story: {
+        id: 'majestic_story',
+        numericId: 7,
+        name: 'Majestic Story',
+        description: 'Une expérience cinématographique ultime avec ouverture vidéo et tableau de bord complet.',
+        previewUrl: '/video2.mp4',
+        openingVideoUrl: '/video2.mp4',
+        bgColor: '#fdfaf5',
+        accentColor: '#D4AF37',
+        fonts: ['Playfair+Display', 'Allison', 'Montserrat'],
+        pages: [
+            { id: 'story-1', title: 'Le Début', bgUrl: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?q=80&w=2000', elements: [{ id: 's1', type: 'text', x: 50, y: 80, style: { fontSize: 28, fontFamily: 'Allison', color: '#ffffff', textAlign: 'center', width: 80 }, content: 'Tout a commencé par un simple regard...' }] },
+            { id: 'story-2', title: 'Complicité', bgUrl: 'https://images.unsplash.com/photo-1516589174184-c685bc016a30?q=80&w=2000', elements: [{ id: 's2', type: 'text', x: 50, y: 80, style: { fontSize: 28, fontFamily: 'Allison', color: '#ffffff', textAlign: 'center', width: 80 }, content: 'Nos rires sont devenus notre plus belle mélodie.' }] },
+            { id: 'story-3', title: 'Voyage', bgUrl: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2000', elements: [{ id: 's3', type: 'text', x: 50, y: 80, style: { fontSize: 28, fontFamily: 'Allison', color: '#ffffff', textAlign: 'center', width: 80 }, content: 'Main dans la main, nous avons parcouru le monde.' }] },
+            { id: 'story-4', title: 'Engagement', bgUrl: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?q=80&w=2000', elements: [{ id: 's4', type: 'text', x: 50, y: 80, style: { fontSize: 28, fontFamily: 'Allison', color: '#ffffff', textAlign: 'center', width: 80 }, content: 'Une promesse pour la vie.' }] },
+            { id: 'story-5', title: 'Demande', bgUrl: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2000', elements: [{ id: 's5', type: 'text', x: 50, y: 80, style: { fontSize: 28, fontFamily: 'Allison', color: '#ffffff', textAlign: 'center', width: 80 }, content: 'Sous un ciel étoilé, j\'ai dit OUI.' }] },
+            { id: 'story-6', title: 'Préparatifs', bgUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2000', elements: [{ id: 's6', type: 'text', x: 50, y: 80, style: { fontSize: 28, fontFamily: 'Allison', color: '#ffffff', textAlign: 'center', width: 80 }, content: 'Chaque détail compte.' }] },
+            { id: 'story-7', title: 'La Promesse', bgUrl: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2000', elements: [{ id: 's7', type: 'text', x: 50, y: 80, style: { fontSize: 28, fontFamily: 'Allison', color: '#ffffff', textAlign: 'center', width: 80 }, content: 'Notre plus belle aventure commence.' }] },
+            { id: 'story-8', title: 'Invitation', bgUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000', elements: [{ id: 'title', type: 'text', x: 50, y: 40, style: { fontSize: 40, fontFamily: 'Playfair Display', color: '#ffffff', textAlign: 'center', fontWeight: 'bold' } }, { id: 'names', type: 'text', x: 50, y: 55, style: { fontSize: 32, fontFamily: 'Allison', color: '#D4AF37', textAlign: 'center' } }] },
+            {
+                id: 'dashboard',
+                title: 'Infos Utiles',
+                bgColor: '#0f172a',
+                elements: [
+                    { id: 'section-title', type: 'text', x: 50, y: 5, style: { fontSize: 20, fontFamily: 'Playfair Display', color: '#D4AF37', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.3em' }, content: 'Détails de la Célébration' },
+                    { id: 'countdown', type: 'countdown', x: 50, y: 15, style: { width: 90 } },
+                    { id: 'date', type: 'text', x: 50, y: 25, style: { fontSize: 22, fontFamily: 'Playfair Display', color: '#ffffff', textAlign: 'center' } },
+                    { id: 'location-title', type: 'text', x: 50, y: 35, style: { fontSize: 18, fontFamily: 'Playfair Display', color: '#D4AF37', textAlign: 'center' }, content: 'Le Lieu Magique' },
+                    { id: 'location', type: 'text', x: 50, y: 42, style: { fontSize: 14, fontFamily: 'Montserrat', color: '#ffffff', textAlign: 'center', width: 80 } },
+                    { id: 'map', type: 'map', x: 50, y: 55, style: { width: 90 } },
+                    { id: 'gift-list-title', type: 'text', x: 50, y: 70, style: { fontSize: 18, fontFamily: 'Playfair Display', color: '#D4AF37', textAlign: 'center' }, content: 'Liste de Mariage' },
+                    { id: 'gift-list', type: 'gift-list', x: 50, y: 78, style: { width: 85 } },
+                    { id: 'rsvp-title', type: 'text', x: 50, y: 88, style: { fontSize: 20, fontFamily: 'Playfair Display', color: '#D4AF37', textAlign: 'center' }, content: 'Confirmez votre présence' },
+                    { id: 'rsvp-form', type: 'rsvp-form', x: 50, y: 95, style: { width: 90 } }
+                ]
+            }
         ]
     }
 };
